@@ -3,3 +3,11 @@ langchain-community
 chromadb
 pypdf
 python-dotenv
+PyPDF2
+python-docx
+faiss-cpu langchain-community sentence-transformers
+fastapi uvicorn langchain-ollama
+python-jose passlib[bcrypt]
+langchain chromadb sentence-transformers
+langchain-huggingface
+langchain-chroma chromadb
