@@ -1,6 +1,5 @@
 langchain
 langchain-community
-chromadb
 pypdf
 python-dotenv
 PyPDF2
@@ -11,3 +10,7 @@ python-jose passlib[bcrypt]
 langchain chromadb sentence-transformers
 langchain-huggingface
 langchain-chroma chromadb
+langchain-chroma langchain-ollama 
+langchain-text-splitters
+bcrypt==4.0.1
+passlib==1.7.4
