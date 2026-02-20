@@ -2,10 +2,11 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Login from "./pages/login";
-import Chat from "./pages/Chat/Chat";
-import Upload from "./pages/Upload";
+import './index.css'; 
+import Login from "./pages/Login/login";
+
 import Mainpage from "./pages/Mainpage/Mainpage"
+import './App.css'
 
 function App() {
   const [token, setToken] = useState(
@@ -13,30 +14,26 @@ function App() {
   );
 
   return (
+    <div className="hero">
     <Routes>
       <Route
         path="/login"
         element={<Login setToken={setToken} />}
       />
 
+      
       <Route
-        path="/upload"
+        path="/"
         element={
-          token ? <Upload token={token} /> : <Navigate to="/login" />
-        }
-      />
 
-      <Route
-        path="/chat"
-        element={
-          // token ? <Chat token={token} setToken={setToken} /> : <Navigate to="/login" />
           token ? <Mainpage token={token} setToken={setToken} /> : <Navigate to="/login" />
         }
       />
 
-      <Route path="/" element={<Navigate to="/upload" />} />
+      
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
+    </div>
   );
 }
 

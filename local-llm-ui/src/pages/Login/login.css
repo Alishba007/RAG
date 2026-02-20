@@ -1,0 +1,44 @@
+.custom-modal .modal-content {
+  background-color: black;
+  color: white;
+  border: 2px solid white;
+}
+
+.custom-modal .modal-header {
+  border-bottom: none;
+}
+
+.custom-modal .modal-footer {
+  border-top: none;
+}
+
+.custom-modal .form-control {
+  background-color: black;
+  color: white;
+  border: 2px solid white;
+}
+
+.custom-modal .form-control::placeholder {
+  color: #ccc;
+}
+
+.custom-modal .btn-link {
+  color: white;
+}
+
+.custom-purple-btn {
+  background-color: #991c77; 
+  border: 1px solid #991c77;
+  color: white;
+}
+
+.custom-purple-btn:hover {
+  background-color: #731d58;
+  border-color: #5a35a0;
+}
+
+.custom-purple-btn:disabled {
+  background-color: #991c77;
+  border-color: #991c77;
+}
+
