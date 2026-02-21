@@ -1,6 +1,5 @@
 .custom-navbar {
   background: transparent !important;
-  position: absolute;
   width: 100%;
   z-index: 10;
   padding: 20px 0; /* makes navbar taller */

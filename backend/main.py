@@ -120,6 +120,12 @@ def refresh_token(refresh_token: str):
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
 
+
+@app.get("/verify_token")
+def verify_token(user: str = Depends(verify_access_token)):
+    return {"valid": True, "user": user}
+
+
 # -------------------- PROTECTED TEST --------------------
 
 @app.get("/protected")
