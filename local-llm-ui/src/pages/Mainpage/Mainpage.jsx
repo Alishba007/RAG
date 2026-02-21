@@ -70,10 +70,11 @@ const Chat = ({ token }) => {
  return (
   <div>
     
-  <section className="vh-100  text-white d-flex flex-column">
+  <section className="vh-100  text-white d-flex flex-column overflow-hidden">
     <Navbar/>
 
-    <div className="container-fluid flex-grow-1 d-flex flex-column">
+    <div className="container-fluid flex-grow-1 d-flex flex-column" style={{ minHeight: 0 }}>
+
 
       {/* Messages */}
       <div className="flex-grow-1 overflow-auto p-4">

@@ -1,11 +1,19 @@
 import React from "react";
 import { Navbar, Container, Nav, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./navbar.css"; // IMPORTANT: add this
+import "./navbar.css";
 
-export default function AppNavbar() {
+export default function AppNavbar({ setToken }) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
-    <Navbar expand="lg" className=" custom-navbar" variant="dark">
+    <Navbar expand="lg" className="custom-navbar" variant="dark">
       <Container>
         <Navbar.Brand href="/" className="brand-white">
           <img
@@ -28,8 +36,8 @@ export default function AppNavbar() {
           </Nav>
 
           <div className="d-flex align-items-center">
-            <Button className="signup-btn">
-              Sign up
+            <Button className="signup-btn" onClick={handleLogout}>
+              Logout
             </Button>
           </div>
         </Navbar.Collapse>
