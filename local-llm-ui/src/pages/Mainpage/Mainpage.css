@@ -12,15 +12,29 @@
 
 @media (max-width: 768px) {
   .cards-container {
-    align-items: flex-start;   /* prevent vertical stretch */
+    align-items: flex-start;   
   }
 
   .animated-border-wrapper {
     flex: 1 1 140px;
     max-width: 160px;
     min-width: 130px;
-    align-self: flex-start;    /* force natural height */
+    align-self: flex-start;    
   }
 
   
+}@media (max-width: 576px) {
+
+  .input-bar button {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+  .input-bar .form-control {
+    font-size: 14px;
+  }
+
 }
+
+
+

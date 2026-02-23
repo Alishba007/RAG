@@ -80,17 +80,17 @@ const Chat = ({ token }) => {
    {!hasStartedChat && messages.length === 0 && (
   <div className="cards-container">
     <Animated_Cards
-      title="Ask about your documents"
+      title="Ask About your Documents"
       description="Upload PDFs and get summaries instantly."
       onClick={() => setInput("Summarize my uploaded document")}
     />
     <Animated_Cards
-      title="Explain complex topics"
+      title="Explain Complex Topics"
       description="Break down difficult concepts step by step."
       onClick={() => setInput("Explain quantum computing simply")}
     />
     <Animated_Cards
-      title="Generate ideas"
+      title="Generate Ideas"
       description="Brainstorm and refine your thinking."
       onClick={() => setInput("Give me startup ideas")}
     />
