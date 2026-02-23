@@ -1,0 +1,60 @@
+
+.animated-border-wrapper {
+   flex: 1 1 250px;   /* grow, shrink, base width */
+  max-width: 320px;
+  min-width: 200px;
+  padding: 3px; /* this creates border thickness */
+  border-radius: 12px;
+  background: linear-gradient(
+    45deg,
+    #ff595e,
+    #ffca3a,
+    #8ac926,
+    #1982c4,
+    #6a4c93,
+    #ff6700
+  );
+  background-size: 400%;
+  animation: glow 8s linear infinite;
+}
+
+.custom-card {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  border: none;
+  height: 180px; /* uniform height */
+  display: flex;
+  align-items: center;
+}
+
+.card-body {
+  text-align: center;
+}
+
+@keyframes glow {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
+}
+
+@media (max-width: 768px) {
+
+  .animated-border-wrapper {
+    flex: 1 1 140px;
+    max-width: 100px;
+    min-width: 100px;
+  }
+
+  .custom-card {
+     height: 100px; 
+  }
+
+  .card-title {
+    font-size: 14px;
+    
+  }
+
+  .card-text {
+    display: none;
+  }
+}

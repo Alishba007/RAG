@@ -1,15 +1,20 @@
 import { useState, useRef } from "react";
 import Navbar from '../../components/Navbar/navbar';
-
+import Animated_Cards from '../../components/Animated_Cards/Animated_Cards'
+import './Mainpage.css'
 const Chat = ({ token }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
+  const [hasStartedChat, setHasStartedChat] = useState(false);
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
 
+    if (!hasStartedChat) {
+    setHasStartedChat(true);
+  }
     setMessages(prev => [...prev, { type: "user", text: input }]);
 
     try {
@@ -72,12 +77,33 @@ const Chat = ({ token }) => {
     
   <section className="vh-100  text-white d-flex flex-column overflow-hidden">
     <Navbar/>
+   {!hasStartedChat && messages.length === 0 && (
+  <div className="cards-container">
+    <Animated_Cards
+      title="Ask about your documents"
+      description="Upload PDFs and get summaries instantly."
+      onClick={() => setInput("Summarize my uploaded document")}
+    />
+    <Animated_Cards
+      title="Explain complex topics"
+      description="Break down difficult concepts step by step."
+      onClick={() => setInput("Explain quantum computing simply")}
+    />
+    <Animated_Cards
+      title="Generate ideas"
+      description="Brainstorm and refine your thinking."
+      onClick={() => setInput("Give me startup ideas")}
+    />
+  </div>
+)}
+
+
 
     <div className="container-fluid flex-grow-1 d-flex flex-column" style={{ minHeight: 0 }}>
 
 
       {/* Messages */}
-      <div className="flex-grow-1 overflow-auto p-4">
+      <div className="flex-grow-1 overflow-auto p-3">
         {messages.map((msg, idx) => (
           <div
             key={idx}
