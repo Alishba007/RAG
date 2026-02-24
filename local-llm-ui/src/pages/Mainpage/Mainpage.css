@@ -23,17 +23,20 @@
   }
 
   
-}@media (max-width: 576px) {
+}
 
-  .input-bar button {
-    padding: 6px 10px;
-    font-size: 14px;
+
+/* Mobile optimization */
+@media (max-width: 576px) {
+  .chat-input {
+    font-size: 0.7rem;
+    padding: 8px;
   }
 
-  .input-bar .form-control {
-    font-size: 14px;
+  .chat-btn {
+    padding: 4px 6px;
+    font-size: 0.8rem;
   }
-
 }
 
 

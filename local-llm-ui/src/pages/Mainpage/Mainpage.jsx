@@ -133,7 +133,7 @@ const Chat = ({ token }) => {
 
           <input
             type="text"
-            className="form-control form-control-lg me-2 bg-dark text-white border-secondary"
+            className="form-control form-control-lg me-2 bg-dark text-white border-secondary chat-input"
             placeholder="Type message"
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -151,14 +151,14 @@ const Chat = ({ token }) => {
           />
 
           <button
-            className="btn btn-outline-light me-2"
+            className="btn btn-outline-light me-2 chat-btn"
             onClick={() => fileInputRef.current.click()}
           >
             📎
           </button>
 
           <button
-            className="btn btn-primary"
+            className="btn btn-primary chat-btn"
             onClick={handleSendMessage}
           >
             Send

@@ -37,7 +37,7 @@
   100% { background-position: 0 0; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 576px) {
 
   .animated-border-wrapper {
     flex: 1 1 140px;
@@ -46,7 +46,7 @@
   }
 
   .custom-card {
-     height: 90px; 
+     height: 70px; 
   }
 
   .card-title {
