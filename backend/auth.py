@@ -1,97 +1,133 @@
-# backend/auth.py
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi import HTTPException, Depends
-from passlib.context import CryptContext
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from jose import jwt, JWTError
-from datetime import datetime, timedelta
-import sqlite3
-from pathlib import Path
+from passlib.context import CryptContext
+import psycopg2
+from psycopg2.extras import RealDictCursor
+import os
+from dotenv import load_dotenv
+import uuid
+from datetime import timedelta
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-import hashlib
-# ===== CONFIG =====
-SECRET_KEY = "change-this-in-production"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-DB_PATH = Path(__file__).resolve().parent / "chrome.sqlite3"
-
+load_dotenv()
 security = HTTPBearer()
+router = APIRouter()
+SECRET_KEY = os.getenv("JWT_SECRET")
+ALGORITHM = "HS256"
+ACCESS_EXPIRE_MINUTES = 60
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+# -------------------- DATABASE --------------------
+def get_db_conn():
+    conn = psycopg2.connect(
+        host=os.getenv("SUPABASE_HOST"),
+        database=os.getenv("SUPABASE_DB"),
+        user=os.getenv("SUPABASE_USER"),
+        password=os.getenv("SUPABASE_PASSWORD"),
+        port=5432,
+        sslmode="require"
+    )
+    conn.autocommit = True
+    return conn
 
-# ===== PASSWORD UTILS =====
-MAX_BCRYPT_BYTES = 72
+# -------------------- MODELS --------------------
+class UserLogin(BaseModel):
+    username: str
+    password: str
 
-def hash_password(password: str) -> str:
-    sha256_digest = hashlib.sha256(password.encode()).hexdigest()
-    return pwd_context.hash(sha256_digest)
+class UserRegister(BaseModel):
+    username: str
+    password: str
 
+# -------------------- UTILS --------------------
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
 
+def hash_password(password):
+    return pwd_context.hash(password)
 
-def verify_password(password: str, hashed: str) -> bool:
-    sha256_digest = hashlib.sha256(password.encode()).hexdigest()
-    return pwd_context.verify(sha256_digest, hashed)
-
-
-
-
-# ===== TOKEN =====
-def create_access_token(username: str):
+def create_access_token(user_id: str):
+    
     payload = {
-        "sub": username,
-        "exp": datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        "sub": str(user_id),
+        "type": "access"
     }
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
+def get_user_by_username(username: str):
+    conn = get_db_conn()
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute("SELECT id, username, password_hash FROM users WHERE username=%s", (username,))
+        user = cur.fetchone()
+    conn.close()
+    return user
 
-def verify_access_token(
-    credentials: HTTPAuthorizationCredentials = Depends(security)
-):
-    try:
-        payload = jwt.decode(
-            credentials.credentials,
-            SECRET_KEY,
-            algorithms=[ALGORITHM]
+def create_user(username: str, password: str):
+    user_id = str(uuid.uuid4())
+    hashed = hash_password(password)
+    conn = get_db_conn()
+    with conn.cursor() as cur:
+        cur.execute(
+            "INSERT INTO users (id, username, password_hash,created_at) VALUES (%s, %s, %s,Now())",
+            (user_id, username, hashed)
         )
-        username = payload.get("sub")
-        if not username:
+    return {"id": user_id, "username": username}
+
+# -------------------- DEPENDENCIES --------------------
+def verify_access_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        if payload.get("type") != "access":
             raise HTTPException(status_code=401, detail="Invalid token")
-        return username
+        user_id = payload["sub"]
+        return user_id
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
+# -------------------- ROUTES --------------------
+@router.post("/signup")
+def signup(user: UserRegister):
+    existing = get_user_by_username(user.username)
+    if existing:
+        raise HTTPException(status_code=400, detail="User already exists")
+    new_user = create_user(user.username, user.password)
+    return {"message": "User created successfully", "user_id": new_user["id"]}
 
-# ===== DB =====
-def get_user(username: str):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT username, password_hash FROM users WHERE username = ?",
-        (username,)
-    )
-    user = cursor.fetchone()
-    conn.close()
-    return user
-    
+@router.post("/login")
+def login(user: UserLogin):
+    db_user = get_user_by_username(user.username)
+    if not db_user or not verify_password(user.password, db_user["password_hash"]):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    token = create_access_token(db_user["id"])
+    return {"access_token": token, "token_type": "bearer"}
 
-def create_user(username: str, password: str, role: str = "user"):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+@router.post("/refresh")
+def refresh_token(refresh_token: str):
+    try:
+        payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
 
-    cursor.execute(
-        "SELECT id FROM users WHERE username = ?",
-        (username,)
-    )
-    if cursor.fetchone():
-        conn.close()
-        raise HTTPException(status_code=400, detail="Username already exists")
+        if payload.get("type") != "refresh":
+            raise HTTPException(status_code=401, detail="Invalid token")
 
-     # Use passlib + SHA-256 prehash
-    password_hash = hash_password(password)
+        new_payload = {
+            "sub": payload["sub"],
+            "type": "access"
+        }
 
-    cursor.execute(
-        "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
-        (username, password_hash, role)
-    )
+        new_access = jwt.encode(new_payload, SECRET_KEY, algorithm=ALGORITHM)
 
-    conn.commit()
-    conn.close()
+        return {"access_token": new_access}
+
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
+
+
+@router.get("/verify_token")
+def verify_token(user: str = Depends(verify_access_token)):
+    return {
+        "valid": True,
+        "user_id": user_id
+    }
