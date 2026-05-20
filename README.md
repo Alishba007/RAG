@@ -454,29 +454,4 @@ Contributions welcome:
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open Pull Request
 
-## 💡 Tips for Success
 
-- Start with smaller documents for testing
-- Use a lightweight model first (Mistral)
-- Monitor token usage
-- Test with different document types
-- Keep vector store clean (remove unused docs)
-- Monitor API response times
-- Set up proper logging
-
-## 📞 Support
-
-- Check [Troubleshooting](#-troubleshooting) section
-- Review existing issues on GitHub
-- Check LangChain/FastAPI docs
-- Open an [Issue](https://github.com/Alishba007/RAG/issues)
-
----
-
-**Happy Building! 🚀**
-
-*Built with ❤️ using FastAPI, React, LangChain, and Ollama*
-
----
-
-*Last Updated: May 2026*
