@@ -440,18 +440,3 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]
 - [ ] Cost tracking & analytics
 - [ ] API rate limiting
 
-## 📝 License
-
-MIT License - See LICENSE file
-
-## 🤝 Contributing
-
-Contributions welcome:
-
-1. Fork repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
-
