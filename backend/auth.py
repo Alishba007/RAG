@@ -129,5 +129,5 @@ def refresh_token(refresh_token: str):
 def verify_token(user: str = Depends(verify_access_token)):
     return {
         "valid": True,
-        "user_id": user_id
+        "user_id": user
     }

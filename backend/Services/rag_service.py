@@ -3,17 +3,14 @@ class RAGService:
         self.llm = llm
         self.vector_store = vector_store
 
-    def query(self, question: str, user: str, k: int = 3):
+    def stream_query(self, question: str, user: str, k: int = 3):
         docs = self.vector_store.search(question, k=k, user=user)
 
         if not docs:
-            return {
-                "answer": "No relevant documents found.",
-                "sources": []
-            }
+            yield "No relevant documents found."
+            return
 
         context = "\n\n".join([doc["page_content"] for doc in docs])
-
 
         prompt = f"""
 You are a helpful assistant answering ONLY from the provided context.
@@ -28,18 +25,5 @@ Question:
 Answer:
 """
 
-        response = self.llm.generate(prompt)
-
-        sources = [
-            {
-                "source": doc["metadata"].get("source"),
-                "chunk_id": doc["metadata"].get("chunk_id")
-            }   
-        for doc in docs
-        ]
-
-
-        return {
-            "answer": response,
-            "sources": sources
-        }
+        for token in self.llm.stream(prompt):
+            yield token

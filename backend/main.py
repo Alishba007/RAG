@@ -19,6 +19,7 @@ from backend.file_processor import read_file
 
 from backend.auth import router as auth_router
 from backend.auth import verify_access_token
+from fastapi.responses import StreamingResponse
 
 
 # ---------------- INIT ----------------
@@ -93,12 +94,9 @@ async def upload_file(
 @app.post("/chat")
 async def chat(
     request: ChatRequest,
-    user_id: str = Depends(verify_access_token)
+    user: str = Depends(verify_access_token)
 ):
 
-    response = rag_service.query(
-        question=request.message,
-        user=user_id
-    )
+    generator = rag_service.stream_query(request.message, user)
 
-    return response
+    return StreamingResponse(generator, media_type="text/plain")

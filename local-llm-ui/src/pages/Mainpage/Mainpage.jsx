@@ -10,36 +10,64 @@ const Chat = ({ token }) => {
   const [hasStartedChat, setHasStartedChat] = useState(false);
 
   const handleSendMessage = async () => {
-    if (!input.trim()) return;
+  if (!input.trim()) return;
 
-    if (!hasStartedChat) {
+  if (!hasStartedChat) {
     setHasStartedChat(true);
   }
-    setMessages(prev => [...prev, { type: "user", text: input }]);
 
-    try {
-      const response = await fetch("http://localhost:8000/chat", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message: input })
-      });
+  const userMessage = input;
 
-      const data = await response.json();
+  setMessages(prev => [...prev, { type: "user", text: userMessage }]);
 
-      if (response.ok) {
-        setMessages(prev => [...prev, { type: "bot", text: data.reply || "No reply" }]);
-      } else {
-        setMessages(prev => [...prev, { type: "bot", text: `❌ ${data.error || data.detail}` }]);
-      }
-    } catch (err) {
-      setMessages(prev => [...prev, { type: "bot", text: `❌ Network error: ${err.message}` }]);
-    } finally {
-      setInput("");
+  setInput("");
+
+  try {
+    const response = await fetch("http://localhost:8000/chat", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: userMessage })
+    });
+
+    if (!response.body) {
+      throw new Error("No response body");
     }
-  };
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    let botMessage = "";
+
+    // create empty bot message first
+    setMessages(prev => [...prev, { type: "bot", text: "" }]);
+
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) break;
+
+      const chunk = decoder.decode(value);
+      botMessage += chunk;
+
+      // update last message live
+      setMessages(prev => {
+        const updated = [...prev];
+        updated[updated.length - 1] = {
+          type: "bot",
+          text: botMessage
+        };
+        return updated;
+      });
+    }
+
+  } catch (err) {
+    setMessages(prev => [...prev, { type: "bot", text: `❌ ${err.message}` }]);
+  }
+};
+
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -103,7 +131,7 @@ const Chat = ({ token }) => {
 
 
       {/* Messages */}
-      <div className="flex-grow-1 overflow-auto p-3">
+      <div className="flex-grow-1 overflow-auto p-3 white-space: pre-wrap">
         {messages.map((msg, idx) => (
           <div
             key={idx}
