@@ -429,12 +429,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]
 
 ## 📈 Future Enhancements
 
-- [ ] Multi-user document sharing
-- [ ] Advanced document analytics
-- [ ] Real-time collaboration
 - [ ] Conversation history
-- [ ] Document versioning
-- [ ] Custom prompts/templates
 - [ ] Model fine-tuning pipeline
 - [ ] Web interface improvements
 - [ ] Cost tracking & analytics
