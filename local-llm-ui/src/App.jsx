@@ -7,6 +7,7 @@ import "./App.css";
 import Login from "./pages/Login/login";
 import Mainpage from "./pages/Mainpage/Mainpage";
 
+
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [loading, setLoading] = useState(true);
@@ -62,6 +63,7 @@ function App() {
         />
 
         <Route path="*" element={<Navigate to="/login" />} />
+        
       </Routes>
     </div>
   );

@@ -23,7 +23,7 @@ export default function AppNavbar({ setToken }) {
             alt="Logo"
             className="brand-logo"
           />
-          <span className="ms-2 brand-text">Sci-Fi Brain</span>
+          <span className="ms-2 brand-text">Black Brain</span>
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

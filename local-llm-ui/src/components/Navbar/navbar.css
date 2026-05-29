@@ -2,7 +2,8 @@
   background: transparent !important;
   width: 100%;
   z-index: 10;
-  padding: 20px 0; /* makes navbar taller */
+  padding: 20px 0; 
+  flex-shrink: 0;
 }
 
 .brand-logo {
