@@ -7,9 +7,9 @@
 } */
 
 .custom-navbar {
-  position: fixed;    /* floats above everything */
+  position: fixed;    
   top: 0;
-  left: 0;
+  left: 50px;
   width: 100%;
   z-index: 1000;
   padding: 20px 0;
