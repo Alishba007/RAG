@@ -19,7 +19,7 @@ const Sidebar = ({
     await onCreateConversation();
     setLoading(false);
   };
-
+  
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const today = new Date();
@@ -38,22 +38,26 @@ const Sidebar = ({
   return (
     <div className={`chat-sidebar ${isOpen ? "open" : "closed"}`}>
       {/* Toggle Button */}
-      <button
+      {/* <button
         onClick={() => setIsOpen(!isOpen)}
         className="sidebar-toggle"
         title={isOpen ? "Close sidebar" : "Open sidebar"}
       >
         {isOpen ? "◀" : "▶"}
-      </button>
+      </button> */}
 
       {isOpen && (
         <>
           {/* Header */}
           <div className="sidebar-header">
             <div className="logo-section">
-              <div className="logo-icon">🧠</div>
-              <div className="logo-text">
-                <h2>RAG Chat</h2>
+               <img
+                  src="https://plus.unsplash.com/premium_photo-1681487975579-3cb90dbe46a3?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt="Black Brain Logo"
+                   className="sidebar-logo"
+                />
+             <div className="logo-text">
+                <h2>Black Brain</h2>
                 <p>Document Q&A</p>
               </div>
             </div>
@@ -120,7 +124,7 @@ const Sidebar = ({
           {/* Logout Button */}
           <div className="sidebar-footer">
             <button onClick={onLogout} className="logout-btn">
-              <span>🚪</span>
+              
               <span>Logout</span>
             </button>
           </div>

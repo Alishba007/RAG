@@ -1,9 +1,20 @@
-.custom-navbar {
+/* .custom-navbar {
   background: transparent !important;
   width: 100%;
   z-index: 10;
   padding: 20px 0; 
   flex-shrink: 0;
+} */
+
+.custom-navbar {
+  position: fixed;    /* floats above everything */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 20px 0;
+  flex-shrink: 0;
+  background: transparent !important;  /* needs a real background now or it looks transparent */
 }
 
 .brand-logo {

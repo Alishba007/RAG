@@ -1,10 +1,13 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from '../../components/Navbar/navbar';
 import Animated_Cards from '../../components/Animated_Cards/Animated_Cards';
 import Sidebar from "../../components/Sidebar/sidebar";
+
 import './Mainpage.css';
 
 const Chat = ({ token }) => {
+   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -82,7 +85,8 @@ const handleSelectConversation = async (id) => {
   };
 
   const handleLogout = () => {
-    // your logout logic here
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   
@@ -188,7 +192,7 @@ const handleSendMessage = async () => {
 
     {/* Navbar - shrinks to its natural height */}
     <div style={{ flexShrink: 0 }}>
-      <Navbar />
+      {/* <Navbar /> */}
     </div>
 
     {/* Everything below navbar */}
@@ -207,7 +211,7 @@ const handleSendMessage = async () => {
       />
 
       {/* Right column */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 ,paddingTop: "100px"}}>
 
         {/* Cards - only show when no chat */}
         {!hasStartedChat && messages.length === 0 && (
